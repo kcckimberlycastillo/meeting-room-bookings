@@ -39,12 +39,13 @@ class BookingController extends Controller
      */
     public function store(Request $request): object
     {
-        $validator = Validator::make($request->room_id, [
-            'room_id' => 'required',
+        $validator = Validator::make($request->all(), [
+            'roomId' => 'required',
+            'bookingDate' => 'required',
         ]);
 
         if ($validator->fails()){
-            return response()->json(['message' => $validator->errors()->all()]);
+            return response()->json(['message' => $validator->errors()->all()], 400);
         } 
 
         $existing = MeetingRoomBookings::where([
@@ -105,6 +106,15 @@ class BookingController extends Controller
      */
     public function update(Request $request, $id): object
     {
+        $validator = Validator::make($request->all(), [
+            'roomId' => 'required',
+            'bookingDate' => 'required',
+        ]);
+        
+        if ($validator->fails()){
+            return response()->json(['message' => $validator->errors()->all()], 400);
+        } 
+
         $booking = MeetingRoomBookings::find($id);
 
         $booking->room_id = $request->roomId;

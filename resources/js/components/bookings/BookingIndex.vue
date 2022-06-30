@@ -44,7 +44,7 @@
                     enabled: true,
                     initialSortBy: {field: 'booking_date', type: 'asc'}
                 }"
-                :v-on:selected-rows-change="isLoggedIn ? selectionChanged : ''"
+                v-on:selected-rows-change="selectionChanged"
             >
                 <template #selected-row-actions>
                     <b-button variant="secondary" class="mr-2" v-on:click="showEditModal = true" v-if="showEdit">Edit</b-button>
@@ -348,8 +348,8 @@ methods: {
                 this.modalShow = false
 
             }
-        } catch (err) {
-          this.errorMsg = err.response.data.message
+        } catch (error) {
+            this.notify(Array.isArray(error.response.data.message) ? 'Invalid input!' : error.response.data.message)
         }
     },
     async update(){
@@ -368,13 +368,13 @@ methods: {
                 this.showEditModal = false
 
             }
-        } catch (err) {
-          this.errorMsg = err.response.data.message
+        } catch (error) {
+            this.notify(Array.isArray(error.response.data.message) ? 'Invalid input!' : error.response.data.message)
         }
     },
     selectionChanged(params) {
         this.showEdit = true
-
+        
         if(params.selectedRows.length !== 0){
             this.selectedRows = params.selectedRows
 
@@ -382,7 +382,7 @@ methods: {
             let startTime = `${moment(data[0].booking_date + ' '+ data[0].booking_time_from).format('HH:mm')}`
             let endTime = `${moment(data[0].booking_date + ' '+ data[0].booking_time_to).format('HH:mm')}`
             this.bookingId = data[0].id
-
+            
             this.formData.room = this.meetingRooms.find((item) => item.id === data[0].meeting_room.id)
             this.formData.startBookingDate = `${moment(data[0].booking_date).format('MM/DD/YYYY')}, ${startTime}`
             this.formData.endBookingDate = `${moment(data[0].booking_date).format('MM/DD/YYYY')}, ${endTime}`

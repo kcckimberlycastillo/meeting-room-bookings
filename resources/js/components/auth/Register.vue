@@ -91,7 +91,7 @@ export default {
             }
           })
           .catch((error) => {
-            this.notify(error.response.data.message.length > 1 ? 'Invalid input!' : error.response.data.message.length )
+            this.notify(Array.isArray(error.response.data.message) ? 'Invalid input!' : error.response.data.message)
           })
         })
       }
